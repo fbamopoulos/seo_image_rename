@@ -10,16 +10,6 @@ OUTPUT_DIR = path.join(INPUT_DIR, 'renamed_images')
 SUPPORTED_EXTENSIONS = ['jpg', 'jpeg', 'png']
 
 
-# def check_overflow(index, overflow_counter, suffix):
-#     try:
-#         NOT_PINNED_KEYWORDS[index]
-#     except IndexError:
-#         index = 0
-#         overflow_counter += 1
-#         suffix = f'_{overflow_counter}'
-#     return index, overflow_counter, suffix
-
-
 def assemble_filename(pinned_index, not_pinned_index):
     filename = f'{PINNED_KEYWORDS[pinned_index]} {NOT_PINNED_KEYWORDS[not_pinned_index]}'
     return filename
@@ -40,10 +30,10 @@ def rename_images(input_directory, output_directory):
                                   assemble_filename(pinned_index, not_pinned_index) + suffix + f'.{file_extension}')
         copyfile(file_path, file_path_new)
         not_pinned_index += 1
-        if not_pinned_index > len(NOT_PINNED_KEYWORDS):
+        if not_pinned_index == len(NOT_PINNED_KEYWORDS):
             not_pinned_index = 0
             pinned_index += 1
-            if pinned_index > len(PINNED_KEYWORDS):
+            if pinned_index == len(PINNED_KEYWORDS):
                 pinned_index = 0
                 overflow_counter += 1
                 suffix = f'_{overflow_counter}'
@@ -53,3 +43,4 @@ def rename_images(input_directory, output_directory):
 if __name__ == '__main__':
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
     rename_images(INPUT_DIR, OUTPUT_DIR)
+    print('Done')
