@@ -7,7 +7,6 @@ NOT_PINNED_KEYWORDS = ['pool', 'meeresblick', 'luxusurlaub', 'privat', 'luxusvil
 
 INPUT_DIR = '.'
 OUTPUT_DIR = path.join(INPUT_DIR, 'renamed_images')
-SUPPORTED_EXTENSIONS = ['jpg', 'jpeg', 'png']
 
 
 def assemble_filename(pinned_index, not_pinned_index):
@@ -23,8 +22,6 @@ def rename_images(input_directory, output_directory):
     overflow_counter = 0
     for filename in filenames:
         filename_no_extension, file_extension = filename.rsplit('.', maxsplit=1)
-        if file_extension.lower() not in SUPPORTED_EXTENSIONS:
-            continue
         file_path = path.join(input_directory, filename)
         file_path_new = path.join(output_directory,
                                   assemble_filename(pinned_index, not_pinned_index) + suffix + f'.{file_extension}')
