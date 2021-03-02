@@ -16,6 +16,7 @@ def assemble_filename(pinned_index, not_pinned_index):
 
 
 def rename_images(input_directory, output_directory):
+    renamed_files = 0
     _, _, filenames = next(walk(input_directory))
     pinned_index = 0
     not_pinned_index = 0
@@ -37,10 +38,11 @@ def rename_images(input_directory, output_directory):
                 pinned_index = 0
                 overflow_counter += 1
                 suffix = f'_{overflow_counter}'
-    return
+        renamed_files += 1
+    return renamed_files
 
 
 if __name__ == '__main__':
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
-    rename_images(INPUT_DIR, OUTPUT_DIR)
-    print('Done')
+    renamed_file_count = rename_images(INPUT_DIR, OUTPUT_DIR)
+    print(f'Renamed {renamed_file_count} files')
