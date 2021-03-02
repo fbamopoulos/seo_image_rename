@@ -10,24 +10,25 @@ OUTPUT_DIR = path.join(INPUT_DIR, 'renamed_images')
 SUPPORTED_EXTENSIONS = ['jpg', 'jpeg', 'png']
 
 
-def check_overflow(index, overflow_counter, suffix):
-    try:
-        NOT_PINNED_KEYWORDS[index]
-    except IndexError:
-        index = 0
-        overflow_counter += 1
-        suffix = f'_{overflow_counter}'
-    return index, overflow_counter, suffix
+# def check_overflow(index, overflow_counter, suffix):
+#     try:
+#         NOT_PINNED_KEYWORDS[index]
+#     except IndexError:
+#         index = 0
+#         overflow_counter += 1
+#         suffix = f'_{overflow_counter}'
+#     return index, overflow_counter, suffix
 
 
-def assemble_filename(index):
-    filename = f"{' '.join(PINNED_KEYWORDS)} {NOT_PINNED_KEYWORDS[index]}"
+def assemble_filename(pinned_index, not_pinned_index):
+    filename = f'{PINNED_KEYWORDS[pinned_index]} {NOT_PINNED_KEYWORDS[not_pinned_index]}'
     return filename
 
 
 def rename_images(input_directory, output_directory):
     _, _, filenames = next(walk(input_directory))
-    index = 0
+    pinned_index = 0
+    not_pinned_index = 0
     suffix = ''
     overflow_counter = 0
     for filename in filenames:
@@ -35,10 +36,17 @@ def rename_images(input_directory, output_directory):
         if file_extension.lower() not in SUPPORTED_EXTENSIONS:
             continue
         file_path = path.join(input_directory, filename)
-        index, overflow_counter, suffix = check_overflow(index, overflow_counter, suffix)
-        file_path_new = path.join(output_directory, assemble_filename(index) + suffix + f'.{file_extension}')
+        file_path_new = path.join(output_directory,
+                                  assemble_filename(pinned_index, not_pinned_index) + suffix + f'.{file_extension}')
         copyfile(file_path, file_path_new)
-        index += 1
+        not_pinned_index += 1
+        if not_pinned_index > len(NOT_PINNED_KEYWORDS):
+            not_pinned_index = 0
+            pinned_index += 1
+            if pinned_index > len(PINNED_KEYWORDS):
+                pinned_index = 0
+                overflow_counter += 1
+                suffix = f'_{overflow_counter}'
     return
 
 
